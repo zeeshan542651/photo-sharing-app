@@ -9,7 +9,10 @@ import {
   insertCommentSchema,
   insertRatingSchema,
 } from "@shared/schema";
-import { registerObjectStorageRoutes } from "./integrations/object_storage";
+import {
+  objectStorageClient,
+  registerObjectStorageRoutes,
+} from "./integrations/object_storage";
 
 async function seedDatabase() {
   const existingCreator = await storage.getUserByUsername("creator_user");
@@ -115,7 +118,21 @@ export async function registerRoutes(
 
     const parsed = insertPhotoSchema.parse(req.body);
     // @ts-ignore
-    const photo = await storage.createPhoto({ ...parsed, userId: req.user.id });
+    const userId = req.user.id;
+
+    // Set ACL policy on uploaded photo (make it public and set owner)
+    if (parsed.url && parsed.url.startsWith("/api/objects/")) {
+      try {
+        await objectStorageClient.trySetObjectAclPolicy(parsed.url, {
+          owner: String(userId),
+          visibility: "public",
+        });
+      } catch (error) {
+        console.error("Failed to set ACL policy:", error);
+      }
+    }
+
+    const photo = await storage.createPhoto({ ...parsed, userId });
     res.status(201).json(photo);
   });
 

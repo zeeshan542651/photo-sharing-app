@@ -95,6 +95,7 @@ export function useUpload(options: UseUploadOptions = {}) {
         body: file,
         headers: {
           "Content-Type": file.type || "application/octet-stream",
+          "x-ms-blob-type": "BlockBlob",
         },
       });
 

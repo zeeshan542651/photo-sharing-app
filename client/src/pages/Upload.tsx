@@ -5,13 +5,32 @@ import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormDescription,
+} from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertPhotoSchema } from "@shared/schema";
 import { z } from "zod";
-import { Loader2, Image as ImageIcon, Upload as UploadIcon, X } from "lucide-react";
+import {
+  Loader2,
+  Image as ImageIcon,
+  Upload as UploadIcon,
+  X,
+} from "lucide-react";
 import { useLocation } from "wouter";
 import { useUpload } from "@/hooks/use-upload";
 
@@ -36,8 +55,8 @@ export default function Upload() {
       url: "",
       caption: "",
       location: "",
-      peoplePresent: ""
-    }
+      peoplePresent: "",
+    },
   });
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +68,7 @@ export default function Upload() {
 
     const response = await uploadFile(file);
     if (response) {
-      const imageUrl = `/api${response.objectPath}`;
+      const imageUrl = `${response.objectPath}`;
       setUploadedUrl(imageUrl);
       form.setValue("url", imageUrl);
     }
@@ -70,20 +89,24 @@ export default function Upload() {
   return (
     <div className="min-h-screen bg-muted/30">
       <Navbar />
-      
+
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto">
           <Card className="border-none shadow-lg">
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl font-display">Upload a new photo</CardTitle>
+              <CardTitle className="text-2xl font-display">
+                Upload a new photo
+              </CardTitle>
               <CardDescription>
                 Share your latest masterpiece with the community.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6"
+                >
                   <FormField
                     control={form.control}
                     name="url"
@@ -97,15 +120,22 @@ export default function Upload() {
                                 {isUploading ? (
                                   <>
                                     <Loader2 className="w-10 h-10 mb-3 text-muted-foreground animate-spin" />
-                                    <p className="text-sm text-muted-foreground">Uploading... {progress}%</p>
+                                    <p className="text-sm text-muted-foreground">
+                                      Uploading... {progress}%
+                                    </p>
                                   </>
                                 ) : (
                                   <>
                                     <UploadIcon className="w-10 h-10 mb-3 text-muted-foreground" />
                                     <p className="mb-2 text-sm text-muted-foreground">
-                                      <span className="font-semibold">Click to upload</span> or drag and drop
+                                      <span className="font-semibold">
+                                        Click to upload
+                                      </span>{" "}
+                                      or drag and drop
                                     </p>
-                                    <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 10MB</p>
+                                    <p className="text-xs text-muted-foreground">
+                                      PNG, JPG, GIF up to 10MB
+                                    </p>
                                   </>
                                 )}
                               </div>
@@ -131,9 +161,9 @@ export default function Upload() {
 
                   {(previewUrl || uploadedUrl) && (
                     <div className="relative aspect-video rounded-lg overflow-hidden bg-black/5 border">
-                      <img 
-                        src={previewUrl || uploadedUrl || ""} 
-                        alt="Preview" 
+                      <img
+                        src={previewUrl || uploadedUrl || ""}
+                        alt="Preview"
                         className="w-full h-full object-contain"
                       />
                       <Button
@@ -161,7 +191,10 @@ export default function Upload() {
                       <FormItem>
                         <FormLabel>Title</FormLabel>
                         <FormControl>
-                          <Input placeholder="Give your photo a name" {...field} />
+                          <Input
+                            placeholder="Give your photo a name"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -175,11 +208,11 @@ export default function Upload() {
                       <FormItem>
                         <FormLabel>Caption</FormLabel>
                         <FormControl>
-                          <Textarea 
-                            placeholder="Tell the story behind this photo..." 
+                          <Textarea
+                            placeholder="Tell the story behind this photo..."
                             className="resize-none min-h-[100px]"
                             {...field}
-                            value={field.value || ""} 
+                            value={field.value || ""}
                           />
                         </FormControl>
                         <FormMessage />
@@ -195,7 +228,11 @@ export default function Upload() {
                         <FormItem>
                           <FormLabel>Location (Optional)</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g. Paris, France" {...field} value={field.value || ""} />
+                            <Input
+                              placeholder="e.g. Paris, France"
+                              {...field}
+                              value={field.value || ""}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -209,7 +246,11 @@ export default function Upload() {
                         <FormItem>
                           <FormLabel>People (Optional)</FormLabel>
                           <FormControl>
-                            <Input placeholder="Who is in this photo?" {...field} value={field.value || ""} />
+                            <Input
+                              placeholder="Who is in this photo?"
+                              {...field}
+                              value={field.value || ""}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -218,16 +259,16 @@ export default function Upload() {
                   </div>
 
                   <div className="pt-4 flex justify-end gap-4">
-                    <Button 
-                      type="button" 
-                      variant="ghost" 
+                    <Button
+                      type="button"
+                      variant="ghost"
                       onClick={() => setLocation("/")}
                       disabled={createPhoto.isPending}
                     >
                       Cancel
                     </Button>
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       disabled={createPhoto.isPending}
                       className="min-w-[120px]"
                     >

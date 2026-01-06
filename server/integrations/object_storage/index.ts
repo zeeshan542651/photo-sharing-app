@@ -1,6 +1,7 @@
 export {
   ObjectStorageService,
   ObjectNotFoundError,
+  ObjectAccessDeniedError,
   objectStorageClient,
 } from "./objectStorage";
 
@@ -9,13 +10,7 @@ export type {
   ObjectAccessGroup,
   ObjectAccessGroupType,
   ObjectAclRule,
-} from "./objectAcl";
-
-export {
-  canAccessObject,
-  getObjectAclPolicy,
-  setObjectAclPolicy,
+  ObjectPermission,
 } from "./objectAcl";
 
 export { registerObjectStorageRoutes } from "./routes";
-
