@@ -3,16 +3,21 @@ import { api, type InsertUser } from "@shared/routes";
 import { z } from "zod";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import { buildBaseUrl } from "@/lib/queryClient";
 
 export function useAuth() {
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  const { data: user, isLoading, error } = useQuery({
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: [api.auth.me.path],
     queryFn: async () => {
-      const res = await fetch(api.auth.me.path);
+      const res = await fetch(buildBaseUrl(api.auth.me.path));
       if (res.status === 401) return null;
       if (!res.ok) throw new Error("Failed to fetch user");
       return api.auth.me.responses[200].parse(await res.json());
@@ -22,7 +27,7 @@ export function useAuth() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: z.infer<typeof api.auth.login.input>) => {
-      const res = await fetch(api.auth.login.path, {
+      const res = await fetch(buildBaseUrl(api.auth.login.path), {
         method: api.auth.login.method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
@@ -35,24 +40,33 @@ export function useAuth() {
     },
     onSuccess: (data) => {
       queryClient.setQueryData([api.auth.me.path], data);
-      toast({ title: "Welcome back!", description: `Logged in as ${data.username}` });
+      toast({
+        title: "Welcome back!",
+        description: `Logged in as ${data.username}`,
+      });
       setLocation("/");
     },
     onError: (error: Error) => {
-      toast({ title: "Login failed", description: error.message, variant: "destructive" });
+      toast({
+        title: "Login failed",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
   const registerMutation = useMutation({
     mutationFn: async (data: InsertUser) => {
-      const res = await fetch(api.auth.register.path, {
+      const res = await fetch(buildBaseUrl(api.auth.register.path), {
         method: api.auth.register.method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (!res.ok) {
         if (res.status === 400) {
-          const errorData = api.auth.register.responses[400].parse(await res.json());
+          const errorData = api.auth.register.responses[400].parse(
+            await res.json()
+          );
           throw new Error(errorData.message);
         }
         throw new Error("Registration failed");
@@ -60,17 +74,26 @@ export function useAuth() {
       return api.auth.register.responses[201].parse(await res.json());
     },
     onSuccess: () => {
-      toast({ title: "Account created", description: "Please log in with your new account" });
+      toast({
+        title: "Account created",
+        description: "Please log in with your new account",
+      });
       setLocation("/login");
     },
     onError: (error: Error) => {
-      toast({ title: "Registration failed", description: error.message, variant: "destructive" });
+      toast({
+        title: "Registration failed",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch(api.auth.logout.path, { method: api.auth.logout.method });
+      const res = await fetch(buildBaseUrl(api.auth.logout.path), {
+        method: api.auth.logout.method,
+      });
       if (!res.ok) throw new Error("Logout failed");
     },
     onSuccess: () => {

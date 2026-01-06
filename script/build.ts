@@ -2,6 +2,8 @@ import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
 import { rm, readFile } from "fs/promises";
 
+import "dotenv/config";
+
 // server deps to bundle to reduce openat(2) syscalls
 // which helps cold start times
 const allowlist = [
@@ -56,13 +58,11 @@ async function buildAll() {
       "process.env.NODE_ENV": '"production"',
       "import.meta.dirname": "undefined",
       "import.meta.url": "undefined",
+      "import.meta.env.VITE_API_BASE_URL": `"${process.env.VITE_API_BASE_URL}"`,
     },
-    minify: true,
+    minify: false,
     external: externals,
     logLevel: "info",
-    banner: {
-      js: "const __bundled_dirname = __dirname;",
-    },
   });
 }
 

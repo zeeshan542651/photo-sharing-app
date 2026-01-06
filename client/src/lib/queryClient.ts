@@ -9,13 +9,17 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+export function buildBaseUrl(path: string) {
+  return `${API_BASE_URL}${path}`;
+}
+
 export async function apiRequest(
   method: string,
   url: string,
-  data?: unknown | undefined,
+  data?: unknown | undefined
 ): Promise<Response> {
-  const fullUrl = url.startsWith("/api") ? `${API_BASE_URL}${url}` : url;
-  
+  const fullUrl = url.startsWith("/api") ? buildBaseUrl(url) : url;
+
   const res = await fetch(fullUrl, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
@@ -34,8 +38,8 @@ export const getQueryFn: <T>(options: {
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
     const path = queryKey.join("/") as string;
-    const fullUrl = path.startsWith("/api") ? `${API_BASE_URL}${path}` : path;
-    
+    const fullUrl = path.startsWith("/api") ? buildBaseUrl(path) : path;
+
     const res = await fetch(fullUrl, {
       credentials: "include",
     });
