@@ -24,13 +24,13 @@ async function comparePasswords(supplied: string, stored: string) {
 
 export function setupAuth(app: Express) {
   const isProduction = process.env.NODE_ENV === "production";
-  
+
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET!,
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
-    name: "lumina.sid",
+    name: "ZEE-SHARE.sid",
     cookie: {
       secure: isProduction,
       httpOnly: true,
@@ -54,7 +54,7 @@ export function setupAuth(app: Express) {
       } catch (err) {
         return done(err);
       }
-    }),
+    })
   );
 
   passport.serializeUser((user, done) => done(null, (user as User).id));
@@ -70,15 +70,19 @@ export function setupAuth(app: Express) {
   app.post("/api/register", async (req, res, next) => {
     try {
       const { username, password, role } = req.body;
-      
+
       if (!username || !password) {
-        return res.status(400).json({ message: "Username and password required" });
+        return res
+          .status(400)
+          .json({ message: "Username and password required" });
       }
-      
+
       if (password.length < 6) {
-        return res.status(400).json({ message: "Password must be at least 6 characters" });
+        return res
+          .status(400)
+          .json({ message: "Password must be at least 6 characters" });
       }
-      
+
       if (!["creator", "consumer"].includes(role)) {
         return res.status(400).json({ message: "Invalid role" });
       }
@@ -124,7 +128,7 @@ export function setupAuth(app: Express) {
       if (err) return next(err);
       req.session.destroy((err) => {
         if (err) return next(err);
-        res.clearCookie("lumina.sid");
+        res.clearCookie("ZEE-SHARE.sid");
         res.sendStatus(200);
       });
     });

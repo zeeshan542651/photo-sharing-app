@@ -54,10 +54,15 @@ async function buildAll() {
     outfile: "dist/index.cjs",
     define: {
       "process.env.NODE_ENV": '"production"',
+      "import.meta.dirname": "undefined",
+      "import.meta.url": "undefined",
     },
     minify: true,
     external: externals,
     logLevel: "info",
+    banner: {
+      js: "const __bundled_dirname = __dirname;",
+    },
   });
 }
 
