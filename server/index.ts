@@ -34,9 +34,11 @@ if (isProduction) {
           fontSrc: ["'self'", "https://fonts.gstatic.com"],
           imgSrc: ["'self'", "data:", "https:", "blob:"],
           scriptSrc: ["'self'"],
-          connectSrc: ["'self'", process.env.API_BASE_URL || ""].filter(
-            Boolean
-          ),
+          connectSrc: [
+            "'self'",
+            process.env.API_BASE_URL || "",
+            "https://photosharingappstorage.blob.core.windows.net",
+          ].filter(Boolean),
         },
       },
       crossOriginEmbedderPolicy: false,
