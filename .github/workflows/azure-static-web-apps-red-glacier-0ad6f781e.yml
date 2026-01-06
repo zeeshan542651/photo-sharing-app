@@ -2,13 +2,12 @@ name: Azure Static Web Apps CI/CD
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - main
-
+    branches: [main]
+    paths:
+      - "server/**"
+      - "shared/**"
+      - '.github/workflows/azure-static-web-apps-red-glacier-0ad6f781e.yml'
+      
 jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
@@ -56,4 +55,5 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           action: "close"
+
 
